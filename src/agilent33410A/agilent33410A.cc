@@ -1,11 +1,17 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-17 14:12:12 sb"
+// Time-stamp: "2013-05-17 14:21:20 sb"
 
 /*
   file       agilent33410A.cc
   copyright  (c) Sebastian Blatt 2011, 2012, 2013
 
  */
+
+#define PROGRAM_NAME        "agilent33410A"
+#define PROGRAM_DESCRIPTION "Communicate with Agilent 33410A via VISA."
+#define PROGRAM_COPYRIGHT   "(C) Sebastian Blatt 2013"
+#define PROGRAM_VERSION     "20130517"
+
 
 #include <sstream>
 #include <string>
@@ -16,6 +22,7 @@
 
 #include "Visa.hh"
 #include "CommandLine.hh"
+
 
 class Agilent33410A : public VisaInstrument{
   private:
@@ -167,7 +174,6 @@ unsigned PerformanceCounterWrapper::GetStartTime(){
   return (unsigned)time_start;
 }
 
-
 static bool __global_sigint_status = false;
 
 BOOL control_handler(DWORD type){
@@ -186,7 +192,7 @@ BOOL control_handler(DWORD type){
 
 static const char* __command_line_options[] =
 {
- "Output file", "output", "o", 1, "voltage_data.txt",
+ "Output file", "output", "o", "voltage_data.txt",
   };
 
 
@@ -199,16 +205,18 @@ int main(int argc, char** argv){
     return 1;
   }
 
+  CommandLine cl(argc, argv);
+  DWIM_CommandLine(cl,
+                   PROGRAM_NAME,
+                   PROGRAM_DESCRIPTION,
+                   PROGRAM_VERSION,
+                   PROGRAM_COPYRIGHT,
+                   __command_line_options,
+                   sizeof(__command_line_options)/sizeof(char*)/4);
 
   try{
-    CommandLine cl(argc, argv);
-    cl.AddFlag("output", "o", 1);
-    cl.Parse();
 
-    std::string output_file = "c:/users/sb/desktop/voltage_data.txt";
-    if(cl.IsFlagDefined("-o")){
-      output_file = cl.GetFlagData("-o");
-    }
+    std::string output_file = cl.GetFlagData("-o");
     std::ofstream of;
     of.open(output_file.c_str());
 
