@@ -66,15 +66,15 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Program Files %28x86%29\IVI Foundation\VISA\WinNT\include;C:\boost_1_53_0;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\IVI Foundation\VISA\WinNT\lib\msc;C:\boost_1_53_0\stage\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)\build\$(ProjectName)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\tmp\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)\build\msvc\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\tmp\msvc\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Program Files %28x86%29\IVI Foundation\VISA\WinNT\include;C:\boost_1_53_0;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\IVI Foundation\VISA\WinNT\lib\msc;C:\boost_1_53_0\stage\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)\build\$(ProjectName)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\tmp\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)\build\msvc\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\tmp\msvc\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
