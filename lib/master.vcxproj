@@ -10,6 +10,35 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CommandLine.cc" />
+    <ClCompile Include="Representable.cc" />
+    <ClCompile Include="StringVector.cc" />
+    <ClCompile Include="Visa.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CommandLine.hh">
+      <FileType>Document</FileType>
+    </ClInclude>
+    <ClInclude Include="Exception.hh">
+      <FileType>Document</FileType>
+    </ClInclude>
+    <ClInclude Include="Regex.hh">
+      <FileType>Document</FileType>
+    </ClInclude>
+    <ClInclude Include="Representable.hh">
+      <FileType>Document</FileType>
+    </ClInclude>
+    <ClInclude Include="StringVector.hh">
+      <FileType>Document</FileType>
+    </ClInclude>
+    <ClInclude Include="Validator.hh">
+      <FileType>Document</FileType>
+    </ClInclude>
+    <ClInclude Include="Visa.hh">
+      <FileType>Document</FileType>
+    </ClInclude>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <Keyword>Win32Proj</Keyword>
     <ProjectName>master</ProjectName>
@@ -76,21 +105,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="lib\CommandLine.cc" />
-    <ClCompile Include="lib\Representable.cc" />
-    <ClCompile Include="lib\StringVector.cc" />
-    <ClCompile Include="lib\Visa.cc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="lib\CommandLine.hh" />
-    <None Include="lib\Exception.hh" />
-    <None Include="lib\Regex.hh" />
-    <None Include="lib\Representable.hh" />
-    <None Include="lib\StringVector.hh" />
-    <None Include="lib\Validator.hh" />
-    <None Include="lib\Visa.hh" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
