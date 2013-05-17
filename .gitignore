@@ -3,7 +3,5 @@
 *.d
 *.sdf
 *.opensdf
-tmp/
-build/
 ipch/
 *.vcxproj.user
