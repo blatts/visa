@@ -1,5 +1,12 @@
 2013-05-17  Sebastian Blatt  <blatts@nospam.tld>
 
+	* lib/Representable.cc (Represent): On Windows, use localtime_s
+	instead of localtime.
+
+	* lib/CommandLine.cc (Parse): Fixed parsing for arguments without
+	flags. Pointer arithmetic for std::vector<std::string> does not
+	work. Using const_iterator instead.
+
 	* Restructured visa project to allow code sharing between
 	different tools. Imported directory structure into Visual Studio
 	2010 and started git version control.

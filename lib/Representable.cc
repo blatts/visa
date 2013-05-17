@@ -1,9 +1,9 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2011-12-16 14:33:10 sb"
+// Time-stamp: "2013-05-17 15:26:33 sb"
 
 /*
   file       Representable.cc
-  copyright  (c) Sebastian Blatt 2011
+  copyright  (c) Sebastian Blatt 2011, 2012, 2013
 
  */
 
@@ -58,9 +58,19 @@ std::ostream& EnglishPluralize::Represent(std::ostream& out) const{
 
 std::ostream& TimeNow::Represent(std::ostream& out) const{
   time_t t = time(0);
-  struct tm* tmp = localtime(&t);
+
+#if WIN32
+  struct tm tmp;
+  struct tm* p_tmp = &tmp;
+  memset(p_tmp, 0, sizeof(struct tm));
+  errno_t e = localtime_s(p_tmp, &t);
+#else
+  struct tm* p_tmp = NULL;
+  p_tmp = localtime(&t);
+#endif // WIN32
+
   char s[20];
-  strftime(s,20,"%H:%M:%S",tmp);
+  strftime(s, 20, "%H:%M:%S", p_tmp);
   out << s;
   return out;
 }

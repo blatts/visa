@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -42,17 +42,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files %28x86%29\IVI Foundation\VISA\WinNT\include;C:\boost_1_53_0;$(SolutionDir)\lib;$(SolutionDir)\lib;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\IVI Foundation\VISA\WinNT\lib\msc;C:\boost_1_53_0\stage\lib;$(SolutionDir)\build\$(Configuration);$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)\build\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\tmp\$(Configuration)\</IntDir>
+    <IncludePath>C:\Program Files %28x86%29\IVI Foundation\VISA\WinNT\include;C:\boost_1_53_0;$(SolutionDir)\lib;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\IVI Foundation\VISA\WinNT\lib\msc;C:\boost_1_53_0\stage\lib;$(SolutionDir)\build\mccoy\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)\build\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\tmp\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\Program Files %28x86%29\IVI Foundation\VISA\WinNT\include;C:\boost_1_53_0;$(SolutionDir)\lib;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\IVI Foundation\VISA\WinNT\lib\msc;C:\boost_1_53_0\stage\lib;$(SolutionDir)\build\$(Configuration);$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)\build\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\tmp\$(Configuration)\</IntDir>
+    <LibraryPath>C:\Program Files %28x86%29\IVI Foundation\VISA\WinNT\lib\msc;C:\boost_1_53_0\stage\lib;$(SolutionDir)\build\mccoy\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)\build\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\tmp\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

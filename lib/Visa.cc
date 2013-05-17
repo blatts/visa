@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-17 11:52:19 sb"
+// Time-stamp: "2013-05-17 15:56:30 sb"
 
 /*
   file       Visa.cc
@@ -122,16 +122,25 @@ void VisaInstrument::Write(const std::string& cmd){
   }
 }
 
-std::string VisaInstrument::Read(size_t buf_size){
-  char* buf = new char[buf_size];
-  memset((void*)buf, (char)0, buf_size);
-
-  ViUInt32 read_count = 0;
+std::string VisaInstrument::Read(size_t buf_size, size_t timeout){
   if(debug_protocol){
     std::cout << TimeNow() << ": Read()" << std::endl;
   }
 
-  ViStatus status = viRead(instrument_session, (ViByte*)buf, buf_size, &read_count);
+  char* buf = new char[buf_size];
+  memset((void*)buf, (char)0, buf_size);
+
+  ViStatus status = viSetAttribute(instrument_session, VI_ATTR_TMO_VALUE, timeout);
+  if(status != VI_SUCCESS){
+    delete[] buf;
+    std::ostringstream os;
+    os << "viSetAttribute() failed with status code " << std::hex << status
+       << ".\n" << GetStatusDescription(status);
+    throw EXCEPTION(os.str());
+  }
+
+  ViUInt32 read_count = 0;
+  status = viRead(instrument_session, (ViByte*)buf, buf_size, &read_count);
   if(status != VI_SUCCESS){
     delete[] buf;
     std::ostringstream os;
@@ -139,12 +148,15 @@ std::string VisaInstrument::Read(size_t buf_size){
        << ".\n" << GetStatusDescription(status);
     throw EXCEPTION(os.str());
   }
+
   if(debug_protocol){
     std::cout << TimeNow() << ": Read() read " << read_count << " bytes." << std::endl;
   }
+
   buf[read_count] = '\0';
   std::string rc = std::string((char*)buf);
   delete[] buf;
+
   return rc;
 }
 
@@ -183,9 +195,9 @@ void VisaInstrument::FindResourceList(std::vector<std::string>& descriptors,
   }
 }
 
-std::string VisaInstrument::Query(const std::string& cmd, size_t buf_size){
+std::string VisaInstrument::Query(const std::string& cmd, size_t buf_size, size_t timeout){
   Write(cmd);
-  std::string rc = Read(buf_size);
+  std::string rc = Read(buf_size, timeout);
   boost::algorithm::trim(rc);
   return rc;
 }

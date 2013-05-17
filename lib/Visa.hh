@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-17 11:51:57 sb"
+// Time-stamp: "2013-05-17 15:51:59 sb"
 
 /*
   file       Visa.hh
@@ -40,8 +40,8 @@ class VisaInstrument{
     void Clear();
     void Close();
     void Write(const std::string& cmd);
-    std::string Read(size_t buf_size = 1024);
-    std::string Query(const std::string& cmd, size_t buf_size = 1024);
+    std::string Read(size_t buf_size = 1024, size_t timeout = 2000);
+    std::string Query(const std::string& cmd, size_t buf_size = 1024, size_t timeout = 2000);
     void FindResourceList(std::vector<std::string>& descriptors,
                           const std::string& mask = VISA_DEVICE_DESCRIPTOR_MASK);
 

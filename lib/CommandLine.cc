@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-01-27 11:43:16 sb"
+// Time-stamp: "2013-05-17 15:19:57 sb"
 
 /*
   file       CommandLine.cc
@@ -116,6 +116,7 @@ void CommandLine::Parse(){
     if(parsed_tokens[i] == Flag){
       const size_t id = GetFlagIdFromName(args[i]);
       const size_t required_data = flag_fingerprint[id];
+
       for(size_t j=1; j<=required_data; ++j){
         if(parsed_tokens[i+j] != Data){
           std::ostringstream os;
@@ -132,10 +133,19 @@ void CommandLine::Parse(){
           throw COMMAND_LINE_EXCEPTION(os.str());
         }
       }
-      std::vector<std::string> flag_args(required_data);
-      std::copy(&(args[i+1]), &(args[i+required_data+1]), flag_args.begin());
-      parsed_flag_map[id] = join(flag_args," ");
-      i += required_data;
+
+      // Update parsed_flag_map with argument data
+      if(required_data > 0){
+        std::vector<std::string> flag_args(required_data);
+        std::vector<std::string>::const_iterator it = args.begin() + (i + 1);
+        std::copy(it, it + required_data, flag_args.begin());
+        parsed_flag_map[id] = join(flag_args," ");
+        i += required_data;
+      }
+      else{ // even if no flag argument, this indicates that the flag was parsed.
+        parsed_flag_map[id] = "";
+      }
+
     }
     else{
       parsed_free_arguments.push_back(args[i]);

@@ -1,11 +1,17 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2011-12-16 17:59:23 sb"
+// Time-stamp: "2013-05-17 16:20:15 sb"
 
 /*
   file       keithley3390.cc
-  copyright  (c) Sebastian Blatt 2011
+  copyright  (c) Sebastian Blatt 2011, 2012, 2013
 
  */
+
+#define PROGRAM_NAME        "keithley3390"
+#define PROGRAM_DESCRIPTION "Communicate with Keithley 3390 via VISA."
+#define PROGRAM_COPYRIGHT   "(C) Sebastian Blatt 2013"
+#define PROGRAM_VERSION     "20130517"
+
 
 #include <iostream>
 #include <sstream>
@@ -13,33 +19,35 @@
 #include <string>
 #include <vector>
 
-#include <boost/algorithm/string.hpp>
+#include "Visa.hh"
+#include "CommandLine.hh"
 
-#include "exception.hh"
-#include "string_vector.hh"
-#include "visa.hh"
-#include "cmd_line.hh"
+
+static const char* __command_line_options[] =
+{
+ "Signal frequency", "frequency", "f", "1e6",
+ "Signal amplitude", "amplitude", "a", "1.0",
+ "Signal offset", "offset", "o", "0.0",
+  };
+
+
 
 int main(int argc, char** argv){
-  try{
-    CommandLine cl(argc,argv);
-    cl.AddFlag("frequency","f",1);
-    cl.AddFlag("amplitude","a",1);
-    cl.AddFlag("offset","o",1);
-    cl.Parse();
+  int rc = 1;
 
-    double freq = 1e6; // Hz
-    double amp = 1.0; // Vpp
-    double offset = 0.0; // V
-    if(cl.IsFlagDefined("-f")){
-      freq = string_to_double(cl.GetFlagData("-f"));
-    }
-    if(cl.IsFlagDefined("-a")){
-      amp = string_to_double(cl.GetFlagData("-a"));
-    }
-    if(cl.IsFlagDefined("-o")){
-      offset = string_to_double(cl.GetFlagData("-o"));
-    }
+  CommandLine cl(argc, argv);
+  DWIM_CommandLine(cl,
+                   PROGRAM_NAME,
+                   PROGRAM_DESCRIPTION,
+                   PROGRAM_VERSION,
+                   PROGRAM_COPYRIGHT,
+                   __command_line_options,
+                   sizeof(__command_line_options)/sizeof(char*)/4);
+
+  try{
+    double freq = cl.GetFlagDataAsDouble("-f"); // Hz
+    double amp = cl.GetFlagDataAsDouble("-a"); // Vpp
+    double offset = cl.GetFlagDataAsDouble("-o"); // V
 
     VisaInstrument::InitializeVisaLibrary();
     VisaInstrument v;
@@ -70,15 +78,14 @@ int main(int argc, char** argv){
     // Release front panel
     v.Write("SYST:COMM:RLST LOC");
 
-
-    VisaInstrument::FinalizeVisaLibrary();
+    rc = 0;
   }
   catch(const Exception& e){
-    std::cerr << "Exception caught from " << e.FILE << ":" << e.LINE
-              << " " << e.FUNCTION << "()\n" << e.msg << std::endl;
+    std::cerr << e << std::endl;
   }
 
-  return 0;
+  VisaInstrument::FinalizeVisaLibrary();
+  return rc;
 }
 
 // keithley3390.cc ends here

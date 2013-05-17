@@ -1,11 +1,16 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2012-03-26 17:28:16 sb"
+// Time-stamp: "2013-05-17 16:20:15 sb"
 
 /*
   file       sr760.cc
-  copyright  (c) Sebastian Blatt 2011, 2012
+  copyright  (c) Sebastian Blatt 2011, 2012, 2013
 
  */
+
+#define PROGRAM_NAME        "SR760"
+#define PROGRAM_DESCRIPTION "Communicate with SRS SR760 via VISA."
+#define PROGRAM_COPYRIGHT   "(C) Sebastian Blatt 2013"
+#define PROGRAM_VERSION     "20130517"
 
 #include <iostream>
 #include <sstream>
@@ -13,14 +18,28 @@
 #include <string>
 #include <vector>
 
-#include <boost/algorithm/string.hpp>
+#include "Visa.hh"
+#include "CommandLine.hh"
 
-#include "exception.hh"
-#include "string_vector.hh"
-#include "visa.hh"
-#include "cmd_line.hh"
+// static const char* __command_line_options[] =
+// {
+//   };
+
 
 int main(int argc, char** argv){
+  int rc = 1;
+
+  CommandLine cl(argc, argv);
+  DWIM_CommandLine(cl,
+                   PROGRAM_NAME,
+                   PROGRAM_DESCRIPTION,
+                   PROGRAM_VERSION,
+                   PROGRAM_COPYRIGHT,
+                   NULL,
+                   0);
+                   //  __command_line_options,
+                   //sizeof(__command_line_options)/sizeof(char*)/4);
+
   try{
     CommandLine cl(argc,argv);
     cl.Parse();
@@ -35,15 +54,14 @@ int main(int argc, char** argv){
     v.Clear();
     std::cout << "Connected to " << v.Query("*IDN?") << std::endl;
 
-
-    VisaInstrument::FinalizeVisaLibrary();
+    rc = 0;
   }
   catch(const Exception& e){
-    std::cerr << "Exception caught from " << e.FILE << ":" << e.LINE
-              << " " << e.FUNCTION << "()\n" << e.msg << std::endl;
+    std::cerr << e << std::endl;
   }
 
-  return 0;
+  VisaInstrument::FinalizeVisaLibrary();
+  return rc;
 }
 
 // sr760.cc ends here

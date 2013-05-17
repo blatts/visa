@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-17 14:21:20 sb"
+// Time-stamp: "2013-05-17 16:17:51 sb"
 
 /*
   file       agilent33410A.cc
@@ -12,7 +12,7 @@
 #define PROGRAM_COPYRIGHT   "(C) Sebastian Blatt 2013"
 #define PROGRAM_VERSION     "20130517"
 
-
+#include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -192,17 +192,17 @@ BOOL control_handler(DWORD type){
 
 static const char* __command_line_options[] =
 {
- "Output file", "output", "o", "voltage_data.txt",
+ "Output file", "output", "o", "voltage_data.txt"
   };
 
 
-
-
 int main(int argc, char** argv){
+  int rc = 1;
+
   // Setup sigint handler on Windows
   if(! SetConsoleCtrlHandler((PHANDLER_ROUTINE) control_handler, TRUE)){
     std::cerr << "Could not install SIGINT handler." << std::endl;
-    return 1;
+    return rc;
   }
 
   CommandLine cl(argc, argv);
@@ -254,14 +254,14 @@ int main(int argc, char** argv){
     }
 
     v.ResetDevice();
-    VisaInstrument::FinalizeVisaLibrary();
+    rc = 0;
   }
   catch(const Exception& e){
-    std::cerr << "Exception caught from " << e.FILE << ":" << e.LINE
-              << " " << e.FUNCTION << "()\n" << e.msg << std::endl;
+    std::cerr << e << std::endl;
   }
 
-  return 0;
+  VisaInstrument::FinalizeVisaLibrary();
+  return rc;
 }
 
 // agilent33410A.cc ends here

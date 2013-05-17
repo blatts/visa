@@ -1,9 +1,9 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2012-10-26 11:15:08 sb"
+// Time-stamp: "2013-05-17 14:39:22 sb"
 
 /*
   file       Validator.hh
-  copyright  (c) Sebastian Blatt 2012
+  copyright  (c) Sebastian Blatt 2012, 2013
 
  */
 
@@ -17,6 +17,19 @@
 #include <typeinfo>
 
 #include "Regex.hh"
+
+
+// Visual Studio 2010: windows.h namespace pollution from min & max macros, see
+//
+//   http://stackoverflow.com/questions/1904635/warning-c4003-and-errors-c2589-and-c2059-on-x-stdnumeric-limitsintmax
+//
+// #define NOMINMAX does not seem to work, so #undef explicitly
+
+#ifdef WIN32
+#undef min
+#undef max
+#endif
+
 
 template <typename T>
 class Validator {
@@ -151,7 +164,9 @@ class ValidatorRange : public Validator<T> {
       : min_inclusive(std::numeric_limits<T>::min()),
         max_inclusive(std::numeric_limits<T>::max())
     {
-      if(std::numeric_limits<T>::has_denorm == std::denorm_present){
+      if(std::numeric_limits<T>::is_signed &&
+         std::numeric_limits<T>::has_denorm == std::denorm_present)
+      {
         min_inclusive = -max_inclusive;
       }
     }

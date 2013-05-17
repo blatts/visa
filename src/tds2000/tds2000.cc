@@ -1,11 +1,16 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2012-03-29 17:56:27 sb"
+// Time-stamp: "2013-05-17 15:55:25 sb"
 
 /*
   file       tds2000.cc
-  copyright  (c) Sebastian Blatt 2011, 2012
+  copyright  (c) Sebastian Blatt 2011, 2012, 2013
 
  */
+
+#define PROGRAM_NAME        "tds2000"
+#define PROGRAM_DESCRIPTION "Communicate with Tektronix TDS2000 via VISA."
+#define PROGRAM_COPYRIGHT   "(C) Sebastian Blatt 2013"
+#define PROGRAM_VERSION     "20130517"
 
 #include <iostream>
 #include <sstream>
@@ -15,44 +20,40 @@
 
 #include <boost/algorithm/string.hpp>
 
-#include "exception.hh"
-#include "string_vector.hh"
-#include "visa.hh"
-#include "cmd_line.hh"
+#include "Visa.hh"
+#include "CommandLine.hh"
+#include "StringVector.hh"
+
+static const char* __command_line_options[] =
+{
+ "Output file", "output", "o", "trace.dat",
+ "Channel", "channel", "c", "1",
+ "Timebase", "timebase", "t", "1e-3",
+ "Scale", "scale", "s", "1.0",
+  };
+
 
 int main(int argc, char** argv){
+  int rc = 1;
+
+  CommandLine cl(argc, argv);
+  DWIM_CommandLine(cl,
+                   PROGRAM_NAME,
+                   PROGRAM_DESCRIPTION,
+                   PROGRAM_VERSION,
+                   PROGRAM_COPYRIGHT,
+                   __command_line_options,
+                   sizeof(__command_line_options)/sizeof(char*)/4);
+
   try{
-    CommandLine cl(argc,argv);
-    cl.AddFlag("output","o",1);
-    cl.AddFlag("channel","c",1);
-    cl.AddFlag("timebase","t",1);
-    cl.AddFlag("scale","s",1);
-    cl.Parse();
+    std::string out_file = cl.GetFlagData("-o");
+    int channel = cl.GetFlagDataAsUint("-c");
+    double timebase = cl.GetFlagDataAsDouble("-t");
+    double scale = cl.GetFlagDataAsDouble("-s");
 
-    std::string out_file = "trace.dat";
-    if(cl.IsFlagDefined("-o")){
-      out_file = cl.GetFlagData("-o");
-    }
-
-    int channel = 1;
-    if(cl.IsFlagDefined("-c")){
-      int c = string_to_int(cl.GetFlagData("-c"));
-      if(c>=1 && c <=4){
-        channel = c;
-      }
-    }
     std::ostringstream os;
     os << "CH" << channel;
     std::string channel_string = os.str();
-
-    double timebase = 1e-3; // in s/DIV
-    if(cl.IsFlagDefined("-t")){
-      timebase = string_to_double(cl.GetFlagData("-t"));
-    }
-    double scale = 1.0; // in V/DIV
-    if(cl.IsFlagDefined("-s")){
-      scale = string_to_double(cl.GetFlagData("-s"));
-    }
 
     VisaInstrument::InitializeVisaLibrary();
     VisaInstrument v;
@@ -111,15 +112,15 @@ int main(int argc, char** argv){
     }
     of.close();
 
-
-    VisaInstrument::FinalizeVisaLibrary();
+    rc = 0;
   }
   catch(const Exception& e){
-    std::cerr << "Exception caught from " << e.FILE << ":" << e.LINE
-              << " " << e.FUNCTION << "()\n" << e.msg << std::endl;
+    std::cerr << e << std::endl;
   }
 
-  return 0;
+  VisaInstrument::FinalizeVisaLibrary();
+
+  return rc;
 }
 
 // tds2000.cc ends here
