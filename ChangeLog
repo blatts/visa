@@ -1,0 +1,6 @@
+2013-05-17  Sebastian Blatt  <blatts@nospam.tld>
+
+	* Restructured visa project to allow code sharing between
+	different tools. Imported directory structure into Visual Studio
+	2010 and started git version control.
+

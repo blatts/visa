@@ -44,7 +44,7 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Program Files %28x86%29\IVI Foundation\VISA\WinNT\include;C:\boost_1_53_0;$(SolutionDir)\lib;$(SolutionDir)\lib;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\IVI Foundation\VISA\WinNT\lib\msc;C:\boost_1_53_0\stage\lib;$(SolutionDir)\build\$(Configuration);$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)\build\$(Configuration)</OutDir>
+    <OutDir>$(SolutionDir)\build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\tmp\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

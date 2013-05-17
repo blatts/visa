@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-16 19:09:40 sb"
+// Time-stamp: "2013-05-17 14:12:12 sb"
 
 /*
   file       agilent33410A.cc
@@ -7,19 +7,15 @@
 
  */
 
-#include <iostream>
 #include <sstream>
-#include <fstream>
 #include <string>
 #include <vector>
 #include <ctime>
 
 #include <windows.h>
 
-#include "exception.hh"
-#include "string_vector.hh"
-#include "visa.hh"
-#include "cmd_line.hh"
+#include "Visa.hh"
+#include "CommandLine.hh"
 
 class Agilent33410A : public VisaInstrument{
   private:
@@ -187,6 +183,14 @@ BOOL control_handler(DWORD type){
   }
   return rc;
 }
+
+static const char* __command_line_options[] =
+{
+ "Output file", "output", "o", 1, "voltage_data.txt",
+  };
+
+
+
 
 int main(int argc, char** argv){
   // Setup sigint handler on Windows
