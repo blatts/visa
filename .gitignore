@@ -5,3 +5,4 @@
 *.opensdf
 ipch/
 *.vcxproj.user
+.sconsign.dblite
