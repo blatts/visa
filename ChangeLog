@@ -1,5 +1,8 @@
 2013-05-17  Sebastian Blatt  <blatts@nospam.tld>
 
+	* SConstruct: Initial support for building under OSX using the
+	VISA 32-bit framework.
+
 	* lib/Representable.cc (Represent): On Windows, use localtime_s
 	instead of localtime.
 
@@ -10,4 +13,3 @@
 	* Restructured visa project to allow code sharing between
 	different tools. Imported directory structure into Visual Studio
 	2010 and started git version control.
-
