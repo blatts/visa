@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-17 15:51:59 sb"
+// Time-stamp: "2013-05-20 18:11:05 sb"
 
 /*
   file       Visa.hh
@@ -25,6 +25,7 @@ class VisaInstrument{
     ViSession instrument_session;
 
     bool debug_protocol;
+    size_t timeout;
 
   public:
     static void InitializeVisaLibrary();
@@ -40,6 +41,7 @@ class VisaInstrument{
     void Clear();
     void Close();
     void Write(const std::string& cmd);
+    void SetTimeout(size_t timeout_);
     std::string Read(size_t buf_size = 1024, size_t timeout = 2000);
     std::string Query(const std::string& cmd, size_t buf_size = 1024, size_t timeout = 2000);
     void FindResourceList(std::vector<std::string>& descriptors,

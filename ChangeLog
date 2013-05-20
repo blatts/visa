@@ -1,3 +1,9 @@
+2013-05-20  Sebastian Blatt  <blatts@nospam.tld>
+
+	* lib/Visa.cc (SetTimeout): Added separate function to change
+	current timeout value. Cache current timeout and only call the
+	library function if actually different.
+
 2013-05-17  Sebastian Blatt  <blatts@nospam.tld>
 
 	* SConstruct: Initial support for building under OSX using the
