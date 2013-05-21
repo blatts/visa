@@ -11,7 +11,7 @@
 import os.path
 
 programs = [
-    #'agilent33410A',
+    'agilent33410A',
     'keithley3390',
     'lsvisa',
     'sr760',

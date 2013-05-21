@@ -1,3 +1,10 @@
+2013-05-21  Sebastian Blatt  <blatts@nospam.tld>
+
+	* src/agilent33410A/agilent33410A.cc (sigint_handler): Added
+	SIGINT handling on OSX. Added InstallSigintHandler wrapper
+	function. Instead of WIN32 Api QueryPerformanceCounter, default to
+	time(3) instead.
+
 2013-05-20  Sebastian Blatt  <blatts@nospam.tld>
 
 	* src/agilent33410A/agilent33410A.cc (ErrorOccurred): Switched to
