@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-17 16:20:15 sb"
+// Time-stamp: "2013-05-20 20:21:43 sb"
 
 /*
   file       sr760.cc
@@ -20,6 +20,23 @@
 
 #include "Visa.hh"
 #include "CommandLine.hh"
+
+
+class SR760 : public VisaInstrument {
+  private:
+  public:
+    SR760();
+    void OpenFirst();
+};
+
+SR760::SR760()
+{
+}
+
+void SR760::OpenFirst(){
+  OpenFirstByIDN("SR760");
+}
+
 
 // static const char* __command_line_options[] =
 // {
@@ -45,11 +62,11 @@ int main(int argc, char** argv){
     cl.Parse();
 
     VisaInstrument::InitializeVisaLibrary();
-    VisaInstrument v;
+    SR760 v;
     v.DebugProtocol(true);
 
 
-    v.OpenFirstByIDN("SR760");
+    v.OpenFirst();
 
     v.Clear();
     std::cout << "Connected to " << v.Query("*IDN?") << std::endl;
