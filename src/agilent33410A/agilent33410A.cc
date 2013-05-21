@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-20 20:06:20 sb"
+// Time-stamp: "2013-05-20 20:48:46 sb"
 
 /*
   file       agilent33410A.cc
@@ -22,6 +22,7 @@
 
 #include "Visa.hh"
 #include "CommandLine.hh"
+#include "OutputManipulator.hh"
 
 
 class Agilent33410A : public VisaInstrument{
@@ -78,7 +79,7 @@ void Agilent33410A::ReadErrorQueue(){
 
 bool Agilent33410A::ErrorOccurred(){
   uint16_t stb = ReadStatusByte();
-  std::cout << "*STB? = \"" << stb << "\" = " << std::hex << (int)stb << std::endl;
+  std::cout << "*STB? = \"" << stb << "\" = " << hex_form<uint16_t>(stb) << std::endl;
   return (stb & 0x0004) != 0;
 }
 

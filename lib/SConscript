@@ -14,7 +14,8 @@ env.StaticLibrary('master',
                   ['CommandLine.cc',
                    'Representable.cc',
                    'StringVector.cc',
-                   'Visa.cc'
+                   'Visa.cc',
+                   'ProgressIndicator.cc'
                    ])
 
 # SConscript ends here

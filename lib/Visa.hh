@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-20 19:26:05 sb"
+// Time-stamp: "2013-05-20 20:28:41 sb"
 
 /*
   file       Visa.hh
@@ -11,7 +11,12 @@
 #ifndef VISA_HH__731B623E_D697_4AA6_8816_3B797DF85DBE
 #define VISA_HH__731B623E_D697_4AA6_8816_3B797DF85DBE
 
+#ifdef WIN32
 #include <cstdint>
+#else
+#include <stdint.h>
+#endif
+
 #include <string>
 #include <visa.h>
 
