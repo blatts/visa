@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-17 16:17:51 sb"
+// Time-stamp: "2013-05-20 20:06:20 sb"
 
 /*
   file       agilent33410A.cc
@@ -77,10 +77,9 @@ void Agilent33410A::ReadErrorQueue(){
 }
 
 bool Agilent33410A::ErrorOccurred(){
-  std::string rc = Query("*STB?");
-  unsigned char i = (unsigned char)atoi(rc.c_str());
-  std::cout << "*STB? = \"" << rc << "\" = " << (int)i << std::endl;
-  return (i & 0x04) != 0;
+  uint16_t stb = ReadStatusByte();
+  std::cout << "*STB? = \"" << stb << "\" = " << std::hex << (int)stb << std::endl;
+  return (stb & 0x0004) != 0;
 }
 
 void Agilent33410A::HandleError(){

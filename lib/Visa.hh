@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-20 18:11:05 sb"
+// Time-stamp: "2013-05-20 19:26:05 sb"
 
 /*
   file       Visa.hh
@@ -11,6 +11,7 @@
 #ifndef VISA_HH__731B623E_D697_4AA6_8816_3B797DF85DBE
 #define VISA_HH__731B623E_D697_4AA6_8816_3B797DF85DBE
 
+#include <cstdint>
 #include <string>
 #include <visa.h>
 
@@ -40,10 +41,15 @@ class VisaInstrument{
     void Open(const std::string& descriptor);
     void Clear();
     void Close();
+
     void Write(const std::string& cmd);
     void SetTimeout(size_t timeout_);
     std::string Read(size_t buf_size = 1024, size_t timeout = 2000);
     std::string Query(const std::string& cmd, size_t buf_size = 1024, size_t timeout = 2000);
+
+    void Trigger();
+    uint16_t ReadStatusByte();
+
     void FindResourceList(std::vector<std::string>& descriptors,
                           const std::string& mask = VISA_DEVICE_DESCRIPTOR_MASK);
 

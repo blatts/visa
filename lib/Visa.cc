@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-20 18:19:59 sb"
+// Time-stamp: "2013-05-20 19:23:31 sb"
 
 /*
   file       Visa.cc
@@ -169,6 +169,29 @@ std::string VisaInstrument::Read(size_t buf_size, size_t timeout){
 
   return rc;
 }
+
+void VisaInstrument::Trigger(){
+  ViStatus status = viAssertTrigger(instrument_session, VI_TRIG_PROT_DEFAULT);
+  if(status != VI_SUCCESS){
+    std::ostringstream os;
+    os << "viAssertTrigger() failed with status code " << std::hex << status
+       << ".\n" << GetStatusDescription(status);
+    throw EXCEPTION(os.str());
+  }
+}
+
+uint16_t VisaInstrument::ReadStatusByte(){
+  ViUInt16 stb = 0;
+  ViStatus status = viReadSTB(instrument_session, &stb);
+  if(status != VI_SUCCESS){
+    std::ostringstream os;
+    os << "viReadSTB() failed with status code " << std::hex << status
+       << ".\n" << GetStatusDescription(status);
+    throw EXCEPTION(os.str());
+  }
+  return static_cast<uint16_t>(stb);
+}
+
 
 void VisaInstrument::FindResourceList(std::vector<std::string>& descriptors,
                                       const std::string& mask)
