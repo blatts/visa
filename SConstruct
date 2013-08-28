@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- mode: Python; coding: latin-1 -*-
-# Time-stamp: "2013-05-17 21:16:58 sb"
+# Time-stamp: "2013-08-28 17:30:25 sb"
 
 #  file       SConstruct
 #  copyright  (c) Sebastian Blatt 2013
@@ -11,6 +11,7 @@
 import os.path
 
 programs = [
+    'afg3102c',
     'agilent33410A',
     'keithley3390',
     'lsvisa',
