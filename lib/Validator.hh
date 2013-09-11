@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-09-11 13:08:13 sb"
+// Time-stamp: "2013-09-11 13:40:39 sb"
 
 /*
   file       Validator.hh
@@ -34,8 +34,9 @@
 template <typename T>
 class Validator {
   private:
-    // Do not copy, but link on copy constructor to allow logical recursion.
-    // This means the derived classes have to implement the copy constructor.
+    // Do not copy, but link on copy constructor to allow logical
+    // recursion for some of the Validators. This means the derived
+    // classes have to implement the copy constructor.
     Validator(const Validator&){}
   public:
     typedef T validated_type;
@@ -200,10 +201,19 @@ class ValidatorRegex : public Validator<std::string> {
   private:
     const std::string regex_string;
     regex_t r;
-    ValidatorRegex(const ValidatorRegex&)
-      : Validator<std::string>()
-    {}
+
   public:
+    const std::string& GetRegexString() const {
+      return regex_string;
+    }
+
+    // allow copy, no recursion
+    ValidatorRegex(const ValidatorRegex& v)
+      : Validator<std::string>(),
+        regex_string(v.GetRegexString()),
+        r(v.GetRegexString())
+    {}
+
     ValidatorRegex(const std::string& regex_string_ = ".*")
       : regex_string(regex_string_),
         r(regex_string_)
@@ -220,6 +230,10 @@ class ValidatorRegex : public Validator<std::string> {
 template <typename T>
 class ValidatorNonnegative : public Validator<T> {
   public:
+    ValidatorNonnegative(){}
+    // allow copy, no recursion
+    ValidatorNonnegative(const ValidatorNonnegative&){}
+
     bool Validate(const T& x) const {return x >= static_cast<T>(0);}
     std::ostream& InvalidMessage(const T& x, std::ostream& out) const {
       const std::string n = typeid(T).name();
