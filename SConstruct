@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- mode: Python; coding: latin-1 -*-
-# Time-stamp: "2013-08-28 17:30:25 sb"
+# Time-stamp: "2013-09-11 12:41:04 sb"
 
 #  file       SConstruct
 #  copyright  (c) Sebastian Blatt 2013
@@ -9,6 +9,8 @@
 #   LIBPATH, LIBS, ASFLAGS, LINKFLAGS, CPPFLAGS, CPPPATH, CCFLAGS
 
 import os.path
+
+use_clang = True
 
 programs = [
     'afg3102c',
@@ -41,6 +43,14 @@ warnings = [
     'all'
     ]
 
+env = Environment()
+
+# switch to clang++
+if use_clang:
+  cc = 'clang'
+  cxx = 'clang++'
+  env.Replace(CC = cc, CXX = cxx)
+
 # VISA library is 32 bit only, need -m32
 cxxflags  = '-g -O3 -m32'
 linkflags  = '-m32'
@@ -50,7 +60,6 @@ cxxflags += " " + " ".join(map(lambda w: '-W%s' % w, warnings))
 linkflags += " " + " ".join(map(lambda f: '-framework %s' % f, frameworks))
 
 
-env = Environment()
 env.Append(LINKFLAGS = linkflags)
 env.Append(LIBPATH = library_directories)
 env.Append(CPPPATH = include_directories)

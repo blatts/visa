@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-17 14:39:22 sb"
+// Time-stamp: "2013-09-11 13:08:13 sb"
 
 /*
   file       Validator.hh
@@ -59,6 +59,12 @@ std::ostream& operator<<(std::ostream& out, const Validator<T>& val){
 template <typename T>
 class ValidatorTrue : public Validator<T> {
   public:
+    ValidatorTrue(){}
+
+    // allow copy ctor and do nothing since always evaluates to true
+    // and does not need T = Validator recursion
+    ValidatorTrue(const ValidatorTrue&){}
+
     bool Validate(const T&) const {return true;}
     std::ostream& InvalidMessage(const T&, std::ostream& out) const {
       out << "Programmer error: ValidatorTrue<T> always validates.";
@@ -99,7 +105,7 @@ class ValidatorAnd : public Validator<T> {
     const Validator<T>& validator2;
 
     // hide this since it makes no sense
-    ValidatorAnd(const ValidatorAnd& validator_) {}
+    ValidatorAnd(const ValidatorAnd&) {}
   public:
     ValidatorAnd(const Validator<T>& validator1_,
                  const Validator<T>& validator2_)
@@ -126,7 +132,7 @@ class ValidatorOr : public Validator<T> {
     const Validator<T>& validator2;
 
     // hide this since it makes no sense
-    ValidatorOr(const ValidatorOr& validator_) {}
+    ValidatorOr(const ValidatorOr&) {}
   public:
     ValidatorOr(const Validator<T>& validator1_,
                 const Validator<T>& validator2_)
@@ -155,11 +161,13 @@ class ValidatorRange : public Validator<T> {
     T min_inclusive;
     T max_inclusive;
 
-    // no copy
+  public:
+    // allow copy since ValidatorRange does not accept Validator
+    // objects as arguments since they do not have min, max defined
     ValidatorRange(const ValidatorRange&)
       : Validator<T>()
     {}
-  public:
+
     ValidatorRange()
       : min_inclusive(std::numeric_limits<T>::min()),
         max_inclusive(std::numeric_limits<T>::max())

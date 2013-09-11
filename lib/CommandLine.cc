@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-17 15:19:57 sb"
+// Time-stamp: "2013-09-11 12:35:42 sb"
 
 /*
   file       CommandLine.cc
@@ -14,17 +14,6 @@
 #include <locale>
 #include <sstream>
 #include <cstdlib>
-
-// Static const definitions:
-//
-// The below calls default ctor automatically
-// = assignment calls copy ctor
-// () ctor tries to call function named ValidatorTrueString().
-const ValidatorTrue<std::string> CommandLine::ValidatorTrueString;
-const ValidatorRange<int> CommandLine::ValidatorRangeInt;
-const ValidatorRange<size_t> CommandLine::ValidatorRangeSizeT;
-const ValidatorRange<double> CommandLine::ValidatorRangeDouble;
-
 
 size_t CommandLine::GetNewFlagId(){
   return new_flag_id++;

@@ -1,9 +1,9 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2012-08-14 15:26:48 sb"
+// Time-stamp: "2013-09-11 13:00:00 sb"
 
 /*
   file       CommandLine.hh
-  copyright  (c) Sebastian Blatt 2011, 2012
+  copyright  (c) Sebastian Blatt 2011, 2012, 2013
 
  */
 
@@ -65,10 +65,6 @@ class CommandLine{
     std::string program_version;
     std::string program_copyright;
 
-    static const ValidatorTrue<std::string> ValidatorTrueString;
-    static const ValidatorRange<int> ValidatorRangeInt;
-    static const ValidatorRange<size_t> ValidatorRangeSizeT;
-    static const ValidatorRange<double> ValidatorRangeDouble;
 
   public:
 
@@ -83,11 +79,11 @@ class CommandLine{
                  const std::string& default_argument=""
                 );
     bool IsFlagDefined(const std::string& flag) const;
-    const std::string& GetFlagData(const std::string& flag, const Validator<std::string>& val = ValidatorTrueString) const;
+    const std::string& GetFlagData(const std::string& flag, const Validator<std::string>& val = ValidatorTrue<std::string>()) const;
 
-    int GetFlagDataAsInt(const std::string& flag, const Validator<int>& val = ValidatorRangeInt) const;
-    size_t GetFlagDataAsUint(const std::string& flag, const Validator<size_t>& val = ValidatorRangeSizeT) const;
-    double GetFlagDataAsDouble(const std::string& flag, const Validator<double>& val = ValidatorRangeDouble) const;
+    int GetFlagDataAsInt(const std::string& flag, const Validator<int>& val = ValidatorRange<int>()) const;
+    size_t GetFlagDataAsUint(const std::string& flag, const Validator<size_t>& val = ValidatorRange<size_t>()) const;
+    double GetFlagDataAsDouble(const std::string& flag, const Validator<double>& val = ValidatorRange<double>()) const;
 
     size_t CountFreeArguments() const;
     const std::string& GetFreeArgument(size_t n) const;
