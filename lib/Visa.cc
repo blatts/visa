@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-20 19:23:31 sb"
+// Time-stamp: "2013-10-28 17:32:47 sb"
 
 /*
   file       Visa.cc
@@ -243,7 +243,7 @@ void VisaInstrument::OpenFirstByIDN(const std::string& idn_string){
     Open(rs[i]);
     Write("*IDN?");
     std::string rc = Read();
-    if(rc.substr(0,idn_string.size()) == idn_string){
+    if(rc.substr(0, idn_string.size()) == idn_string){
       break;
     }
     Close();
