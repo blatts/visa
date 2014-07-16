@@ -14,7 +14,7 @@
     <ClCompile Include="afg3102c.cc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{200C9734-4AB8-4BFD-808D-4D0B71242CED}</ProjectGuid>
+    <ProjectGuid>{38931E3C-8797-4B56-B2ED-FCB545CE0AE0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>afg3102c</RootNamespace>
   </PropertyGroup>

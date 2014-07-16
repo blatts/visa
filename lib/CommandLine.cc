@@ -56,7 +56,7 @@ bool CommandLine::MatchNoDigitCharacter(char c) const {
 }
 
 bool CommandLine::MatchDigitCharacter(char c) const {
-  return std::isdigit(c);
+  return std::isdigit(c) != 0;
 }
 
 bool CommandLine::MatchShortOption(const std::string& s) const {

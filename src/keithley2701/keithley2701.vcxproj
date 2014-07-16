@@ -14,7 +14,7 @@
     <ClCompile Include="keithley2701.cc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{200C9734-4AB8-4BFD-808D-4D0B71242CED}</ProjectGuid>
+    <ProjectGuid>{4A024F65-147E-4DEE-8227-65C9CB61F86C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>keithley2701</RootNamespace>
   </PropertyGroup>

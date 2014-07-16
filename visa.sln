@@ -28,6 +28,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tds2000", "src\tds2000\tds2
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "master", "lib\master.vcxproj", "{698221F7-2418-453A-9B4E-A031A82B9302}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "keithley2701", "src\keithley2701\keithley2701.vcxproj", "{4A024F65-147E-4DEE-8227-65C9CB61F86C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "afg3102c", "src\afg3102c\afg3102c.vcxproj", "{38931E3C-8797-4B56-B2ED-FCB545CE0AE0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{698221F7-2418-453A-9B4E-A031A82B9302} = {698221F7-2418-453A-9B4E-A031A82B9302}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -58,6 +65,14 @@ Global
 		{698221F7-2418-453A-9B4E-A031A82B9302}.Debug|Win32.Build.0 = Debug|Win32
 		{698221F7-2418-453A-9B4E-A031A82B9302}.Release|Win32.ActiveCfg = Release|Win32
 		{698221F7-2418-453A-9B4E-A031A82B9302}.Release|Win32.Build.0 = Release|Win32
+		{4A024F65-147E-4DEE-8227-65C9CB61F86C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4A024F65-147E-4DEE-8227-65C9CB61F86C}.Debug|Win32.Build.0 = Debug|Win32
+		{4A024F65-147E-4DEE-8227-65C9CB61F86C}.Release|Win32.ActiveCfg = Release|Win32
+		{4A024F65-147E-4DEE-8227-65C9CB61F86C}.Release|Win32.Build.0 = Release|Win32
+		{38931E3C-8797-4B56-B2ED-FCB545CE0AE0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{38931E3C-8797-4B56-B2ED-FCB545CE0AE0}.Debug|Win32.Build.0 = Debug|Win32
+		{38931E3C-8797-4B56-B2ED-FCB545CE0AE0}.Release|Win32.ActiveCfg = Release|Win32
+		{38931E3C-8797-4B56-B2ED-FCB545CE0AE0}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
