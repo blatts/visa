@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-17 15:19:57 sb"
+// Time-stamp: "2013-10-29 18:10:13 sb"
 
 /*
   file       CommandLine.cc
@@ -14,17 +14,6 @@
 #include <locale>
 #include <sstream>
 #include <cstdlib>
-
-// Static const definitions:
-//
-// The below calls default ctor automatically
-// = assignment calls copy ctor
-// () ctor tries to call function named ValidatorTrueString().
-const ValidatorTrue<std::string> CommandLine::ValidatorTrueString;
-const ValidatorRange<int> CommandLine::ValidatorRangeInt;
-const ValidatorRange<size_t> CommandLine::ValidatorRangeSizeT;
-const ValidatorRange<double> CommandLine::ValidatorRangeDouble;
-
 
 size_t CommandLine::GetNewFlagId(){
   return new_flag_id++;
@@ -323,7 +312,6 @@ void DWIM_CommandLine(CommandLine& cl,
     cl.SetVersionInformation(program_name, program_description,
                              program_version, program_copyright);
     cl.DefineAndParse(program_options, length);
-    //cl.Parse();
   }
   catch(const CommandLineException& e){
     std::cerr << "Command line error:\n" << e << std::endl;

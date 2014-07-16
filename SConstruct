@@ -1,33 +1,37 @@
 #!/usr/bin/env python
 # -*- mode: Python; coding: latin-1 -*-
-# Time-stamp: "2013-05-17 21:16:58 sb"
+# Time-stamp: "2014-07-16 10:20:48 sb"
 
 #  file       SConstruct
-#  copyright  (c) Sebastian Blatt 2013
+#  copyright  (c) Sebastian Blatt 2013, 2014
 
 # environment variables:
 #   LIBPATH, LIBS, ASFLAGS, LINKFLAGS, CPPFLAGS, CPPPATH, CCFLAGS
 
 import os.path
 
+use_clang = True
+
 programs = [
-    #'agilent33410A',
+    'afg3102c',
+    'agilent33410A',
     'keithley3390',
     'lsvisa',
     'sr760',
-    'tds2000'
+    'tds2000',
+    'keithley2701'
     ]
 
 build_directory = 'build/scons/'
 
 include_directories = [
-    '/sw/include',
+    #'/sw/include',
     '/Library/Frameworks/VISA.framework/Versions/A/Headers',
     os.path.realpath('lib')
     ]
 
 library_directories = [
-    '/sw/lib',
+    #'/sw/lib',
     os.path.realpath(build_directory + 'master')
     ]
 
@@ -40,6 +44,14 @@ warnings = [
     'all'
     ]
 
+env = Environment()
+
+# switch to clang++
+if use_clang:
+  cc = 'clang'
+  cxx = 'clang++'
+  env.Replace(CC = cc, CXX = cxx)
+
 # VISA library is 32 bit only, need -m32
 cxxflags  = '-g -O3 -m32'
 linkflags  = '-m32'
@@ -49,7 +61,6 @@ cxxflags += " " + " ".join(map(lambda w: '-W%s' % w, warnings))
 linkflags += " " + " ".join(map(lambda f: '-framework %s' % f, frameworks))
 
 
-env = Environment()
 env.Append(LINKFLAGS = linkflags)
 env.Append(LIBPATH = library_directories)
 env.Append(CPPPATH = include_directories)

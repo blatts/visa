@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-20 20:21:43 sb"
+// Time-stamp: "2013-10-30 10:20:14 sb"
 
 /*
   file       sr760.cc
@@ -10,7 +10,7 @@
 #define PROGRAM_NAME        "SR760"
 #define PROGRAM_DESCRIPTION "Communicate with SRS SR760 via VISA."
 #define PROGRAM_COPYRIGHT   "(C) Sebastian Blatt 2013"
-#define PROGRAM_VERSION     "20130517"
+#define PROGRAM_VERSION     "20131029"
 
 #include <iostream>
 #include <sstream>
@@ -18,30 +18,53 @@
 #include <string>
 #include <vector>
 
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/join.hpp>
+
 #include "Visa.hh"
 #include "CommandLine.hh"
+#include "StringVector.hh"
+
+
+#define SR760_IDN_STRING "Stanford_Research_Systems,SR760"
 
 
 class SR760 : public VisaInstrument {
+  public:
+    enum Trace {ZERO = 0, ONE = 1, TWO = 2};
+
   private:
   public:
     SR760();
     void OpenFirst();
+    void GetSpectrum(Trace trace, std::vector<double>& data);
 };
 
-SR760::SR760()
-{
-}
+SR760::SR760() {}
 
 void SR760::OpenFirst(){
-  OpenFirstByIDN("SR760");
+  OpenFirstByIDN(SR760_IDN_STRING);
+}
+
+void SR760::GetSpectrum(Trace trace, std::vector<double>& data){
+  std::ostringstream os;
+  os << "SPEC?" << (static_cast<int>(trace) - 1);
+  std::string rc = Query(os.str(), 10000);
+
+  std::vector<std::string> svals;
+  boost::split(svals, rc, boost::is_any_of(","));
+
+  //SR760 will always return 400 data bins
+  svals.resize(400);
+  vector_string_to_double(svals, data);
 }
 
 
-// static const char* __command_line_options[] =
-// {
-//   };
-
+static const char* __command_line_options[] =
+{
+  "Trace to download (0, 1, 2)", "trace", "t", "0",
+  "Output file", "output", "o", "spectrum.txt"
+};
 
 int main(int argc, char** argv){
   int rc = 1;
@@ -52,29 +75,43 @@ int main(int argc, char** argv){
                    PROGRAM_DESCRIPTION,
                    PROGRAM_VERSION,
                    PROGRAM_COPYRIGHT,
-                   NULL,
-                   0);
-                   //  __command_line_options,
-                   //sizeof(__command_line_options)/sizeof(char*)/4);
-
+                    __command_line_options,
+                   sizeof(__command_line_options)/sizeof(char*)/4);
   try{
-    CommandLine cl(argc,argv);
-    cl.Parse();
+
+    unsigned trace =  cl.GetFlagDataAsUint("-t");
+    std::string output_file = cl.GetFlagData("-o");
 
     VisaInstrument::InitializeVisaLibrary();
     SR760 v;
-    v.DebugProtocol(true);
-
+    v.DebugProtocol(false);
 
     v.OpenFirst();
-
     v.Clear();
-    std::cout << "Connected to " << v.Query("*IDN?") << std::endl;
+
+
+    std::string x = v.Query("*IDN?");
+    std::cout << "Connected to \"" << x << "\"" << std::endl;
+
+    std::cout << "Download trace " << trace << std::endl;
+    std::vector<double> vals;
+    v.GetSpectrum(static_cast<SR760::Trace>(trace), vals);
+
+    std::cout << "Save to file \"" << output_file << "\"" << std::endl;
+    std::ofstream of;
+    of.open(output_file.c_str());
+    for(size_t i=0; i<vals.size(); ++i){
+      of << i << "\t" << vals[i] << "\n";
+    }
+    of.close();
 
     rc = 0;
   }
   catch(const Exception& e){
     std::cerr << e << std::endl;
+  }
+  catch(const std::exception& e){
+    std::cerr << e.what() << std::endl;
   }
 
   VisaInstrument::FinalizeVisaLibrary();

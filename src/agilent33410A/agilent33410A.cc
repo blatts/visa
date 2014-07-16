@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-20 20:06:20 sb"
+// Time-stamp: "2013-05-21 14:15:22 sb"
 
 /*
   file       agilent33410A.cc
@@ -18,10 +18,15 @@
 #include <vector>
 #include <ctime>
 
+#ifdef WIN32
 #include <windows.h>
+#else
+#include <signal.h>
+#endif // WIN32
 
 #include "Visa.hh"
 #include "CommandLine.hh"
+#include "OutputManipulator.hh"
 
 
 class Agilent33410A : public VisaInstrument{
@@ -78,7 +83,7 @@ void Agilent33410A::ReadErrorQueue(){
 
 bool Agilent33410A::ErrorOccurred(){
   uint16_t stb = ReadStatusByte();
-  std::cout << "*STB? = \"" << stb << "\" = " << std::hex << (int)stb << std::endl;
+  std::cout << "*STB? = \"" << stb << "\" = " << hex_form<uint16_t>(stb) << std::endl;
   return (stb & 0x0004) != 0;
 }
 
@@ -135,7 +140,11 @@ void Agilent33410A::SetupDCMeasurement(){
 class PerformanceCounterWrapper {
   private:
     double frequency;
+ #ifdef WIN32
     __int64 counter_start;
+ #else
+    unsigned long counter_start;
+ #endif // WIN32
     time_t time_start;
 
   public:
@@ -149,20 +158,28 @@ PerformanceCounterWrapper::PerformanceCounterWrapper()
   : frequency(0),
     counter_start(0)
 {
+ #ifdef WIN32
   LARGE_INTEGER tmp;
   QueryPerformanceFrequency(&tmp);
   frequency = ((double)tmp.QuadPart);
 
   QueryPerformanceCounter(&tmp);
   counter_start = tmp.QuadPart;
-
+ #else
+  frequency = 1;
+  counter_start = time(0);
+ #endif //WIN32
   time_start = time(0);
 }
 
 double PerformanceCounterWrapper::GetRelativeTime(){
+ #ifdef WIN32
   LARGE_INTEGER tmp;
   QueryPerformanceCounter(&tmp);
-  return double(tmp.QuadPart - counter_start) / frequency;
+  return ((double)(tmp.QuadPart - counter_start)) / frequency;
+ #else
+  return ((double)(time(0) - counter_start)) / frequency;
+ #endif // WIN32
 }
 
 double PerformanceCounterWrapper::GetAbsoluteTime(){
@@ -175,19 +192,58 @@ unsigned PerformanceCounterWrapper::GetStartTime(){
 
 static bool __global_sigint_status = false;
 
+#ifdef WIN32
+
 BOOL control_handler(DWORD type){
   BOOL rc = FALSE;
   switch(type){
     case CTRL_C_EVENT:
       __global_sigint_status = true;
       rc = TRUE;
-      //std::cerr << "Caught SIGINT, aborting." << std::endl;
+      std::cerr << "Caught Ctrl-c (SIGINT), aborting." << std::endl;
       break;
     default:
       break;
   }
   return rc;
 }
+
+#else
+
+//  Proper way to handle cleanup on SIGINT is to do it, reset SIGINT
+//  handler to SIG_DFL and send yourself SIGINT again. See
+//
+//    http://www.cons.org/cracauer/sigint.html
+//
+//  Here, want to simply set __global_sigint_status = true.
+
+void sigint_handler(int sig){
+  // if(sig == SIGINT){
+  //   std::cerr << "Caught Ctrl-c (SIGINT), aborting." << std::endl
+  //   signal(SIGINT, SIG_DFL);
+  //   kill(getpid(), SIGINT);
+  // }
+  if(sig == SIGINT){
+    std::cerr << "Caught Ctrl-c (SIGINT), aborting." << std::endl;
+    __global_sigint_status = true;
+  }
+}
+
+#endif // WIN32
+
+bool InstallSigintHandler(){
+  bool rc = false;
+#ifdef WIN32
+  rc = SetConsoleCtrlHandler((PHANDLER_ROUTINE) control_handler, TRUE);
+#else
+  sig_t s = signal(SIGINT, sigint_handler);
+  if(s != SIG_ERR){
+    rc = true;
+  }
+#endif //WIN32
+  return rc;
+}
+
 
 static const char* __command_line_options[] =
 {
@@ -198,8 +254,7 @@ static const char* __command_line_options[] =
 int main(int argc, char** argv){
   int rc = 1;
 
-  // Setup sigint handler on Windows
-  if(! SetConsoleCtrlHandler((PHANDLER_ROUTINE) control_handler, TRUE)){
+  if(!InstallSigintHandler()){
     std::cerr << "Could not install SIGINT handler." << std::endl;
     return rc;
   }

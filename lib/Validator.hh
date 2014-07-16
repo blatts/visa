@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-17 14:39:22 sb"
+// Time-stamp: "2013-09-11 13:40:39 sb"
 
 /*
   file       Validator.hh
@@ -34,8 +34,9 @@
 template <typename T>
 class Validator {
   private:
-    // Do not copy, but link on copy constructor to allow logical recursion.
-    // This means the derived classes have to implement the copy constructor.
+    // Do not copy, but link on copy constructor to allow logical
+    // recursion for some of the Validators. This means the derived
+    // classes have to implement the copy constructor.
     Validator(const Validator&){}
   public:
     typedef T validated_type;
@@ -59,6 +60,12 @@ std::ostream& operator<<(std::ostream& out, const Validator<T>& val){
 template <typename T>
 class ValidatorTrue : public Validator<T> {
   public:
+    ValidatorTrue(){}
+
+    // allow copy ctor and do nothing since always evaluates to true
+    // and does not need T = Validator recursion
+    ValidatorTrue(const ValidatorTrue&){}
+
     bool Validate(const T&) const {return true;}
     std::ostream& InvalidMessage(const T&, std::ostream& out) const {
       out << "Programmer error: ValidatorTrue<T> always validates.";
@@ -99,7 +106,7 @@ class ValidatorAnd : public Validator<T> {
     const Validator<T>& validator2;
 
     // hide this since it makes no sense
-    ValidatorAnd(const ValidatorAnd& validator_) {}
+    ValidatorAnd(const ValidatorAnd&) {}
   public:
     ValidatorAnd(const Validator<T>& validator1_,
                  const Validator<T>& validator2_)
@@ -126,7 +133,7 @@ class ValidatorOr : public Validator<T> {
     const Validator<T>& validator2;
 
     // hide this since it makes no sense
-    ValidatorOr(const ValidatorOr& validator_) {}
+    ValidatorOr(const ValidatorOr&) {}
   public:
     ValidatorOr(const Validator<T>& validator1_,
                 const Validator<T>& validator2_)
@@ -155,11 +162,13 @@ class ValidatorRange : public Validator<T> {
     T min_inclusive;
     T max_inclusive;
 
-    // no copy
+  public:
+    // allow copy since ValidatorRange does not accept Validator
+    // objects as arguments since they do not have min, max defined
     ValidatorRange(const ValidatorRange&)
       : Validator<T>()
     {}
-  public:
+
     ValidatorRange()
       : min_inclusive(std::numeric_limits<T>::min()),
         max_inclusive(std::numeric_limits<T>::max())
@@ -192,10 +201,19 @@ class ValidatorRegex : public Validator<std::string> {
   private:
     const std::string regex_string;
     regex_t r;
-    ValidatorRegex(const ValidatorRegex&)
-      : Validator<std::string>()
-    {}
+
   public:
+    const std::string& GetRegexString() const {
+      return regex_string;
+    }
+
+    // allow copy, no recursion
+    ValidatorRegex(const ValidatorRegex& v)
+      : Validator<std::string>(),
+        regex_string(v.GetRegexString()),
+        r(v.GetRegexString())
+    {}
+
     ValidatorRegex(const std::string& regex_string_ = ".*")
       : regex_string(regex_string_),
         r(regex_string_)
@@ -212,6 +230,10 @@ class ValidatorRegex : public Validator<std::string> {
 template <typename T>
 class ValidatorNonnegative : public Validator<T> {
   public:
+    ValidatorNonnegative(){}
+    // allow copy, no recursion
+    ValidatorNonnegative(const ValidatorNonnegative&){}
+
     bool Validate(const T& x) const {return x >= static_cast<T>(0);}
     std::ostream& InvalidMessage(const T& x, std::ostream& out) const {
       const std::string n = typeid(T).name();
