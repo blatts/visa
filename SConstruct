@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- mode: Python; coding: latin-1 -*-
-# Time-stamp: "2013-09-11 12:41:04 sb"
+# Time-stamp: "2014-07-16 10:20:48 sb"
 
 #  file       SConstruct
-#  copyright  (c) Sebastian Blatt 2013
+#  copyright  (c) Sebastian Blatt 2013, 2014
 
 # environment variables:
 #   LIBPATH, LIBS, ASFLAGS, LINKFLAGS, CPPFLAGS, CPPPATH, CCFLAGS
@@ -18,19 +18,20 @@ programs = [
     'keithley3390',
     'lsvisa',
     'sr760',
-    'tds2000'
+    'tds2000',
+    'keithley2701'
     ]
 
 build_directory = 'build/scons/'
 
 include_directories = [
-    '/sw/include',
+    #'/sw/include',
     '/Library/Frameworks/VISA.framework/Versions/A/Headers',
     os.path.realpath('lib')
     ]
 
 library_directories = [
-    '/sw/lib',
+    #'/sw/lib',
     os.path.realpath(build_directory + 'master')
     ]
 

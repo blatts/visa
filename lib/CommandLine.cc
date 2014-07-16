@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-09-11 12:35:42 sb"
+// Time-stamp: "2013-10-29 18:10:13 sb"
 
 /*
   file       CommandLine.cc
@@ -312,7 +312,6 @@ void DWIM_CommandLine(CommandLine& cl,
     cl.SetVersionInformation(program_name, program_description,
                              program_version, program_copyright);
     cl.DefineAndParse(program_options, length);
-    //cl.Parse();
   }
   catch(const CommandLineException& e){
     std::cerr << "Command line error:\n" << e << std::endl;

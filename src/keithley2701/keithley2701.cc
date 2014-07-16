@@ -1,0 +1,61 @@
+// -*- mode: C++ -*-
+// Time-stamp: "2014-07-16 10:20:13 sb"
+
+/*
+  file       keithley2701.cc
+  copyright  (c) Sebastian Blatt 2011, 2012, 2013, 2014
+
+ */
+
+
+#define PROGRAM_NAME        "keithley2701"
+#define PROGRAM_DESCRIPTION "Control Keithley 2701 digital multimeter"
+#define PROGRAM_COPYRIGHT   "(C) Sebastian Blatt 2014"
+#define PROGRAM_VERSION     "20140716"
+
+
+#include <iostream>
+#include <string>
+#include <vector>
+
+#include "Visa.hh"
+#include "CommandLine.hh"
+
+//static const char* __command_line_options[] = {};
+
+
+int main(int argc, char** argv){
+  int rc = 1;
+
+  CommandLine cl(argc,argv);
+  DWIM_CommandLine(cl,
+                   PROGRAM_NAME,
+                   PROGRAM_DESCRIPTION,
+                   PROGRAM_VERSION,
+                   PROGRAM_COPYRIGHT,
+                   NULL,
+                   0);
+                   //__command_line_options,
+                   //sizeof(__command_line_options)/sizeof(char*)/4);
+
+  try{
+    VisaInstrument::InitializeVisaLibrary();
+    VisaInstrument v;
+    std::vector<std::string> desc;
+    v.FindResourceList(desc, "TCPIP::172.23.6.95?*");
+    for(size_t i=0; i<desc.size(); ++i){
+      std::cout << desc[i] << "\n";
+    }
+
+
+    rc = 0;
+  }
+  catch(const Exception& e){
+    std::cerr << e << std::endl;
+  }
+
+  VisaInstrument::FinalizeVisaLibrary();
+  return rc;
+}
+
+// keithley2701.cc ends here

@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-10-28 17:32:53 sb"
+// Time-stamp: "2013-10-30 10:20:14 sb"
 
 /*
   file       sr760.cc
@@ -10,7 +10,7 @@
 #define PROGRAM_NAME        "SR760"
 #define PROGRAM_DESCRIPTION "Communicate with SRS SR760 via VISA."
 #define PROGRAM_COPYRIGHT   "(C) Sebastian Blatt 2013"
-#define PROGRAM_VERSION     "20130517"
+#define PROGRAM_VERSION     "20131029"
 
 #include <iostream>
 #include <sstream>
@@ -31,12 +31,12 @@
 
 class SR760 : public VisaInstrument {
   public:
-    enum Trace {ONE = 1, TWO = 2};
+    enum Trace {ZERO = 0, ONE = 1, TWO = 2};
 
   private:
   public:
     SR760();
-    void OpenFirst()
+    void OpenFirst();
     void GetSpectrum(Trace trace, std::vector<double>& data);
 };
 
@@ -62,10 +62,9 @@ void SR760::GetSpectrum(Trace trace, std::vector<double>& data){
 
 static const char* __command_line_options[] =
 {
-  "Trace to download (1, 2)", "trace", "t", "1",
+  "Trace to download (0, 1, 2)", "trace", "t", "0",
   "Output file", "output", "o", "spectrum.txt"
 };
-
 
 int main(int argc, char** argv){
   int rc = 1;
@@ -92,11 +91,13 @@ int main(int argc, char** argv){
 
 
     std::string x = v.Query("*IDN?");
-    std::cout << "Connected to " << x << std::endl;
+    std::cout << "Connected to \"" << x << "\"" << std::endl;
 
+    std::cout << "Download trace " << trace << std::endl;
     std::vector<double> vals;
     v.GetSpectrum(static_cast<SR760::Trace>(trace), vals);
 
+    std::cout << "Save to file \"" << output_file << "\"" << std::endl;
     std::ofstream of;
     of.open(output_file.c_str());
     for(size_t i=0; i<vals.size(); ++i){
