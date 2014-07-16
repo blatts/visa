@@ -1,5 +1,5 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2014-07-16 10:20:13 sb"
+// Time-stamp: "2014-07-16 11:16:33 sb"
 
 /*
   file       keithley2701.cc
@@ -40,13 +40,15 @@ int main(int argc, char** argv){
 
   try{
     VisaInstrument::InitializeVisaLibrary();
-    VisaInstrument v;
-    std::vector<std::string> desc;
-    v.FindResourceList(desc, "TCPIP::172.23.6.95?*");
-    for(size_t i=0; i<desc.size(); ++i){
-      std::cout << desc[i] << "\n";
-    }
 
+    // Keithley 2701 does not support full VXI11, i.e. portmapper
+    // discovery of instruments. Need to connect to socket directly.
+
+    VisaInstrument v;
+    v.DebugProtocol(true);
+    v.OpenSocket("172.23.6.95", 1394);
+    std::string x = v.Query("*IDN?");
+    std::cout << "\"" << x << "\"" << std::endl;
 
     rc = 0;
   }

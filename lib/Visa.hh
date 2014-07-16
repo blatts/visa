@@ -1,9 +1,9 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-05-20 20:28:41 sb"
+// Time-stamp: "2014-07-16 10:47:16 sb"
 
 /*
   file       Visa.hh
-  copyright  (c) Sebastian Blatt 2011, 2012, 2013
+  copyright  (c) Sebastian Blatt 2011, 2012, 2013, 2014
 
  */
 
@@ -33,6 +33,8 @@ class VisaInstrument{
     bool debug_protocol;
     size_t timeout;
 
+    bool is_raw_socket;
+
   public:
     static void InitializeVisaLibrary();
     static void FinalizeVisaLibrary();
@@ -44,6 +46,8 @@ class VisaInstrument{
 
     std::string GetStatusDescription(ViStatus status);
     void Open(const std::string& descriptor);
+    void OpenSocket(const std::string& ip_address, unsigned short port);
+
     void Clear();
     void Close();
 

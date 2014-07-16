@@ -1,9 +1,9 @@
 // -*- mode: C++ -*-
-// Time-stamp: "2013-10-28 17:32:47 sb"
+// Time-stamp: "2014-07-16 11:15:35 sb"
 
 /*
   file       Visa.cc
-  copyright  (c) Sebastian Blatt 2011, 2012, 2013
+  copyright  (c) Sebastian Blatt 2011, 2012, 2013, 2014
 
  */
 
@@ -54,7 +54,8 @@ void VisaInstrument::FinalizeVisaLibrary(){
 VisaInstrument::VisaInstrument()
   : instrument_session(VI_NULL),
     debug_protocol(false),
-    timeout(0) // will be automatically set on first call to Read()
+    timeout(0), // will be automatically set on first call to Read()
+    is_raw_socket(false)
 {
 }
 
@@ -87,6 +88,26 @@ void VisaInstrument::Open(const std::string& descriptor){
   }
 }
 
+void VisaInstrument::OpenSocket(const std::string& ip_address, unsigned short port){
+  if(debug_protocol){
+    std::cout << TimeNow() << ": OpenSocket(\"" << ip_address
+              << ":" << (int)port << "\")" << std::endl;
+  }
+  std::ostringstream os;
+  os << "TCPIP::" << ip_address << "::" << (int)port << "::SOCKET";
+  Open(os.str());
+
+  is_raw_socket = true;
+
+  ViStatus status = viSetAttribute(instrument_session, VI_ATTR_TERMCHAR_EN, VI_TRUE);
+  if(status != VI_SUCCESS){
+    std::ostringstream os;
+    os << "viSetAttribute() failed with status code " << std::hex << status
+       << ".\n" << GetStatusDescription(status);
+    throw EXCEPTION(os.str());
+  }
+}
+
 void VisaInstrument::Clear(){
   if(debug_protocol){
     std::cout << TimeNow() << ": Clear()" << std::endl;
@@ -106,6 +127,7 @@ void VisaInstrument::Close(){
   }
   viClose(instrument_session);
   instrument_session = VI_NULL;
+  is_raw_socket = false;
 }
 
 void VisaInstrument::Write(const std::string& cmd){
@@ -113,8 +135,18 @@ void VisaInstrument::Write(const std::string& cmd){
   if(debug_protocol){
     std::cout << TimeNow() << ": Write(\"" << cmd << "\")" << std::endl;
   }
-  ViStatus status = viWrite(instrument_session, (ViBuf)cmd.c_str(), (ViUInt32)cmd.size(),
-                            &write_count);
+  ViStatus status = 0;
+
+  if(is_raw_socket){
+    std::string cmd_terminated = cmd + "\n";
+    status = viWrite(instrument_session, (ViBuf)cmd_terminated.c_str(),
+                     (ViUInt32)cmd_terminated.size(), &write_count);
+  }
+  else{
+    status = viWrite(instrument_session, (ViBuf)cmd.c_str(),
+                     (ViUInt32)cmd.size(), &write_count);
+  }
+
   if(status != VI_SUCCESS){
     std::ostringstream os;
     os << "viWrite(" << cmd << ") failed with status code "
@@ -151,7 +183,10 @@ std::string VisaInstrument::Read(size_t buf_size, size_t timeout){
 
   ViUInt32 read_count = 0;
   ViStatus status = viRead(instrument_session, (ViByte*)buf, buf_size, &read_count);
-  if(status != VI_SUCCESS){
+  if(status != VI_SUCCESS &&
+     status != VI_SUCCESS_TERM_CHAR &&
+     status != VI_SUCCESS_MAX_CNT)
+  {
     delete[] buf;
     std::ostringstream os;
     os << "viRead() failed with status code " << std::hex << status
@@ -164,6 +199,7 @@ std::string VisaInstrument::Read(size_t buf_size, size_t timeout){
   }
 
   buf[read_count] = '\0';
+
   std::string rc = std::string((char*)buf);
   delete[] buf;
 
